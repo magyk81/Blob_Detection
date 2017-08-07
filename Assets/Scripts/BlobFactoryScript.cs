@@ -15,16 +15,25 @@ public class BlobFactoryScript : MonoBehaviour {
 
     private int _MaxDistance = 8000;
     private int _CutOffIncrement = 100;
+    private float _ScaleIncrement = 0.025F;
+    private int _OffsetIncrement = 5;
+    private float _MaxScale = 1.0F;
+    private float _MinScale = 0.1F;
 
     private int _DownSample = 4;
     private int _DeadDepthValue = 500;
     private int _GroupsToDetect = 30;
     private int _ScenerySamples = 100;
 
+    private float widthScale = 1.0F;
+    private float heightScale = 1.0F;
+    private int xOffset = 0;
+    private int yOffset = 0;
+
     private int scenerySamples;
 
     private bool paused = false;
-    private bool modBack = true;
+    private bool shiftKeyDown = false;
 
     private ushort[] depthData;
 
@@ -50,8 +59,6 @@ public class BlobFactoryScript : MonoBehaviour {
         sphere.GetComponent<MeshRenderer>().enabled = false;
 
         scenerySamples = _ScenerySamples;
-
-
     }
 
     // Update is called once per frame
@@ -69,48 +76,27 @@ public class BlobFactoryScript : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.LeftShift)
             || Input.GetKeyDown(KeyCode.RightShift))
         {
-            modBack = false;
+            shiftKeyDown = true;
         }
 
         else if (Input.GetKeyUp(KeyCode.LeftShift)
             || Input.GetKeyUp(KeyCode.RightShift))
         {
-            modBack = true;
+            shiftKeyDown = false;
         }
 
-        if (modBack)
+        if (shiftKeyDown)
         {
-            bool print = false;
-            if (Input.GetKeyDown(KeyCode.PageUp))
-            {
-                backCutOff += _CutOffIncrement;
-                print = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.PageDown))
-            {
-                backCutOff -= _CutOffIncrement;
-                print = true;
-            }
-            if (backCutOff >= frontCutOff)
-            {
-                backCutOff = frontCutOff - _CutOffIncrement;
-            }
-            if (print) Debug.Log("Front Cut Off: " + frontCutOff
-                + ", Back Cut Off: " + backCutOff);
-        }
-
-        else
-        {
-            bool print = false;
+            bool printCutOff = false;
             if (Input.GetKeyDown(KeyCode.PageUp))
             {
                 frontCutOff += _CutOffIncrement;
-                print = true;
+                printCutOff = true;
             }
             else if (Input.GetKeyDown(KeyCode.PageDown))
             {
                 frontCutOff -= _CutOffIncrement;
-                print = true;
+                printCutOff = true;
             }
             if (frontCutOff <= backCutOff)
             {
@@ -121,8 +107,81 @@ public class BlobFactoryScript : MonoBehaviour {
                     backCutOff = frontCutOff - _CutOffIncrement;
                 }
             }
-            if (print) Debug.Log("Front Cut Off: " + frontCutOff
+            if (printCutOff) Debug.Log("Front Cut Off: " + frontCutOff
                 + ", Back Cut Off: " + backCutOff);
+
+            bool printScale = false;
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                heightScale += _ScaleIncrement;
+                printScale = true;
+                if (heightScale > _MaxScale) heightScale = _MaxScale;
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                heightScale -= _ScaleIncrement;
+                printScale = true;
+                if (heightScale < _MinScale) heightScale = _MinScale;
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                widthScale -= _ScaleIncrement;
+                printScale = true;
+                if (widthScale < _MinScale) widthScale = _MinScale;
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                widthScale += _ScaleIncrement;
+                printScale = true;
+                if (widthScale > _MaxScale) widthScale = _MaxScale;
+            }
+            if (printScale) Debug.Log("Width Scale: " + widthScale * 100
+                + "%, Height Scale: " + heightScale * 100 + "%");
+        }
+
+        else
+        {
+            bool printCutOff = false;
+            if (Input.GetKeyDown(KeyCode.PageUp))
+            {
+                backCutOff += _CutOffIncrement;
+                printCutOff = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.PageDown))
+            {
+                backCutOff -= _CutOffIncrement;
+                printCutOff = true;
+            }
+            if (backCutOff >= frontCutOff)
+            {
+                backCutOff = frontCutOff - _CutOffIncrement;
+            }
+            if (printCutOff) Debug.Log("Front Cut Off: " + frontCutOff
+                + ", Back Cut Off: " + backCutOff);
+
+            bool printOffset = false;
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                yOffset -= _OffsetIncrement;
+                printOffset = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                yOffset += _OffsetIncrement;
+                printOffset = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                xOffset -= _OffsetIncrement;
+                printOffset = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                xOffset += _OffsetIncrement;
+                printOffset = true;
+            }
+            if (printOffset) Debug.Log("X_Offset: " + xOffset
+                + ", Y_Offset: " + yOffset);
         }
 
         if (paused) return;
@@ -198,7 +257,7 @@ public class BlobFactoryScript : MonoBehaviour {
         {
             Blob blob = (Blob)blobList[i];
             if ((blob).size < blobMinSize) temp.Add(i);
-            else relocateBlob(blob, width, height);
+            else relocateBlob(blob, width / 2, height / 2);
         }
         for (int i = 0; i < temp.Count; i++)
         {
@@ -401,8 +460,18 @@ public class BlobFactoryScript : MonoBehaviour {
         return count;
     }
 
-    private void relocateBlob(Blob blob, int width, int height)
+    private void relocateBlob(Blob blob, int midWidth, int midHeight)
     {
+        blob.x = blob.x + (int)((float)(midWidth - blob.x) * (1.0 - widthScale));
+        blob.w = (int)((float)blob.w * widthScale);
+        
+        blob.y = blob.y + (int)((float)(midHeight - blob.y) * (1.0 - heightScale));
+        blob.h = (int)((float)blob.h * heightScale);
+        
+        blob.x += xOffset;
+        blob.y += yOffset;
 
+        blob.cx = blob.x + blob.w;
+        blob.cy = blob.y + blob.h;
     }
 }
