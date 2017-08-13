@@ -198,6 +198,8 @@ public class BlobFactoryScript : MonoBehaviour {
 
         makeGroups();
 
+        filterGroups();
+
         moveCubes();
 
         moveSpheres();
@@ -297,7 +299,10 @@ public class BlobFactoryScript : MonoBehaviour {
         for (int i = 0; i < blobList.Count; i++)
         {
             Blob blob = (Blob)blobList[i];
-            if (blobGroupRoster[blob.groupTag] < groupMinSize) temp.Add(i);
+            if (blobGroupRoster[blob.groupTag] < groupMinSize)
+            {
+                temp.Add(i);
+            }
         }
         for (int i = 0; i < temp.Count; i++)
         {
@@ -348,11 +353,15 @@ public class BlobFactoryScript : MonoBehaviour {
 
         for (int i = 0; i < min; i++)
         {
-            if (divisor[i] == 0) { Debug.Log("testing"); continue; }
+            GameObject sphere = (GameObject)sphereList[i];
+            if (divisor[i] == 0)
+            {
+                sphere.SetActive(false);
+                continue;
+            }
             avgX[i] /= divisor[i];
             avgY[i] /= divisor[i];
 
-            GameObject sphere = (GameObject)sphereList[i];
             sphere.SetActive(true);
             sphere.transform.position = new Vector3(avgX[i], -avgY[i], -1);
             sphere.transform.localScale = new Vector3(divisor[i], divisor[i], 1);

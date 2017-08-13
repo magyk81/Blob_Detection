@@ -5,16 +5,20 @@ using UnityEngine.UI;
 
 public class FlowerScript : MonoBehaviour {
 
-    public MovieTexture movie;
+    //public VideoClip[] movies;
+    private MovieTexture[] movieTextures;
+    public GameObject gameObject;
 
 	// Use this for initialization
 	void Start ()
     {
-        RawImage rawImage = gameObject.GetComponent<RawImage>();
-        rawImage.texture = movie as MovieTexture;
+        movies[0] = new MovieTexture();
+        //gameObject.GetComponent<MeshRenderer>();
+        //gameObject.GetComponent<Material>().GetTexture = movie as MovieTexture;
+        gameObject.GetComponent<Renderer>().GetComponent<Material>().mainTexture = movies[0] as MovieTexture;
 
         // for testing
-        movie.Play();
+        //movie.Play();
 	}
 	
 	// Update is called once per frame
