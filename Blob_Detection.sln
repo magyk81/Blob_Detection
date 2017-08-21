@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blob_Detection.Plugins", "Blob_Detection.Plugins.csproj", "{79CCE28F-2E8B-BB54-80D7-B3D160AD2A31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blob_Detection", "Blob_Detection.csproj", "{3245230D-78F4-0A64-E886-CD75CA3269AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blob_Detection.Editor.Plugins", "Blob_Detection.Editor.Plugins.csproj", "{FDE513D5-BCDF-A1D5-F818-6F0C6F32CAE8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{79CCE28F-2E8B-BB54-80D7-B3D160AD2A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79CCE28F-2E8B-BB54-80D7-B3D160AD2A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79CCE28F-2E8B-BB54-80D7-B3D160AD2A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79CCE28F-2E8B-BB54-80D7-B3D160AD2A31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3245230D-78F4-0A64-E886-CD75CA3269AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3245230D-78F4-0A64-E886-CD75CA3269AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3245230D-78F4-0A64-E886-CD75CA3269AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3245230D-78F4-0A64-E886-CD75CA3269AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDE513D5-BCDF-A1D5-F818-6F0C6F32CAE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDE513D5-BCDF-A1D5-F818-6F0C6F32CAE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDE513D5-BCDF-A1D5-F818-6F0C6F32CAE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDE513D5-BCDF-A1D5-F818-6F0C6F32CAE8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
