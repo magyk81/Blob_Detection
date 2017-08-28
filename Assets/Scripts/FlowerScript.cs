@@ -19,6 +19,9 @@ public class FlowerScript : MonoBehaviour {
     private bool timeToUnbloom;
     private bool timeToBloom;
 
+    //public VideoClip movie;
+    //public Texture movieTexture;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -26,6 +29,10 @@ public class FlowerScript : MonoBehaviour {
         //gameObject.GetComponent<MeshRenderer>();
         //gameObject.GetComponent<Material>().GetTexture = movie as MovieTexture;
         //gameObject.GetComponent<Renderer>().GetComponent<Material>().mainTexture = movies[0] as MovieTexture;
+        //movieTexture = new MovieTexture();
+        //gameObject.GetComponent<MeshRenderer>();
+        //gameObject.GetComponent<Material>().GetTexture = movie as MovieTexture;
+        //gameObject.GetComponent<Renderer>().GetComponent<Material>().mainTexture = movieTexture as MovieTexture;
 
         // for testing
         //movie.Play();
