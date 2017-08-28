@@ -8,6 +8,7 @@ public class BlobFactoryScript : MonoBehaviour {
     public GameObject cube, sphere;
 
     public DepthSourceManager _DepthManager;
+    public FlowerFactoryScript _FlowerFactory;
 
     public int frontCutOff, backCutOff;
     public int blobsDisplayed, spheresDisplayed;
@@ -200,9 +201,11 @@ public class BlobFactoryScript : MonoBehaviour {
 
         filterGroups();
 
-        moveCubes();
+        //moveCubes();
 
-        moveSpheres();
+        //moveSpheres();
+
+        bloomFlowers();
     }
 
     private void makeBlobs(ushort[] data, int width, int height)
@@ -325,6 +328,14 @@ public class BlobFactoryScript : MonoBehaviour {
         if (blobList.Count > cubeList.Count) return;
         for (int i = blobList.Count; i < cubeList.Count; i++)
         { ((GameObject)cubeList[i]).SetActive(false); }
+    }
+
+    private void bloomFlowers()
+    {
+        foreach (Blob blob in blobList)
+        {
+            _FlowerFactory.bloomFlowers(blob.cx, blob.cy);
+        }
     }
 
     private void moveSpheres()
