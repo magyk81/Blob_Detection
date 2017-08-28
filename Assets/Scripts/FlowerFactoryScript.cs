@@ -42,10 +42,10 @@ public class FlowerFactoryScript : MonoBehaviour {
         {
             for (int j = 0; j < displayedVertically; j++)
             {
-                GameObject flower = ((GameObject)flowerList[i * displayedHorizontally + j]);
+                GameObject flower = ((GameObject)flowerList[i * displayedVertically + j]);
                 flower.transform.position = new Vector3(horizIncrem * i + (horizIncrem / 2),
                     vertIncrem * j + (vertIncrem / 2), 0);
-                flower.transform.localScale = new Vector3(10, 7, 7);
+                flower.transform.localScale = new Vector3(7, 7, 7);
             }
         }
 

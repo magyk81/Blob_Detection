@@ -57,15 +57,16 @@ public class FlowerScript : MonoBehaviour {
     {
         if (timeToBloom && unbloomed)
         {
-            videoPlayer.Stop();
-            GetComponent<UnityEngine.Video.VideoPlayer>().clip = videoClip;
-            videoPlayer.Play();
+            if (!GetComponent<UnityEngine.Video.VideoClip>().Equals(videoClip))
+            {
+                GetComponent<UnityEngine.Video.VideoPlayer>().clip = videoClip;
+            }
+            if (!videoPlayer.isPlaying) videoPlayer.Play();
             unbloomed = false;
         }
 
-        if (!bloomed)
+        /*if (!bloomed)
         {
-            //Debug.Log("testing");
             if ((int)videoPlayer.frame == (int)videoPlayer.frameCount) bloomed = true;
         }
 
@@ -80,20 +81,20 @@ public class FlowerScript : MonoBehaviour {
         if (!unbloomed)
         {
             if ((int)videoPlayer.frame < 2) unbloomed = true;
-        }
+        }*/
 	}
 
     public void bloom(int x, int y, bool bloom)
     {
-        int localScaleX = (int)gameObject.transform.localScale.x / 2;
-        int localScaleY = (int)gameObject.transform.localScale.y / 2;
+        int localScaleX = (int)gameObject.transform.localScale.x / 1;
+        int localScaleY = (int)gameObject.transform.localScale.y / 1;
         int positionX = (int)gameObject.transform.position.x;
-        int positionY = (int)gameObject.transform.position.y;
+        int positionY = (int)gameObject.transform.position.y * (-1);
 
         if (x > positionX + localScaleX) return;
         else if (x < positionX - localScaleX) return;
-        //else if (y > positionY + localScaleY) return;
-       // else if (y < positionY - localScaleY) return;
+        else if (y > positionY + localScaleY) return;
+        else if (y < positionY - localScaleY) return;
 
         if (bloom)
         {
