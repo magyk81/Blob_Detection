@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlobFactoryScript : MonoBehaviour {
 
     // Cubes to show blobs, spheres to show blob groups
-    public GameObject cube, sphere;
+    public GameObject cube, sphere, backgroundPlane;
 
     public DepthSourceManager _DepthManager;
     public FlowerFactoryScript _FlowerFactory;
@@ -67,6 +67,11 @@ public class BlobFactoryScript : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Space) || scenerySamples < _ScenerySamples)
             makeScenery();
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            resetScenery();
+        }
 
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -201,7 +206,7 @@ public class BlobFactoryScript : MonoBehaviour {
 
         filterGroups();
 
-        //moveCubes();
+        moveCubes();
 
         //moveSpheres();
 
@@ -321,7 +326,7 @@ public class BlobFactoryScript : MonoBehaviour {
             GameObject cube = (GameObject)cubeList[i];
             
             cube.SetActive(true);
-            cube.transform.position = new Vector3(b.cx, -b.cy, 0);
+            cube.transform.position = new Vector3(b.cx, -b.cy, -1);
             cube.transform.localScale = new Vector3(b.w, b.h, 1);
         }
 
@@ -400,6 +405,11 @@ public class BlobFactoryScript : MonoBehaviour {
             scenerySamples--;
             Debug.Log("samples to go: " + scenerySamples);
         }
+    }
+
+    private void resetScenery()
+    {
+        sceneryBlobList.Clear();
     }
 
     class Blob
