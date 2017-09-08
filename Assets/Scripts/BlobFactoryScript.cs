@@ -2,10 +2,11 @@
 using Windows.Kinect;
 using UnityEngine;
 
-public class BlobFactoryScript : MonoBehaviour {
+public class BlobFactoryScript : MonoBehaviour
+{
 
     // Cubes to show blobs, spheres to show blob groups
-    public GameObject cube, sphere, backgroundPlane;
+    public GameObject cube, sphere, foreground;
 
     public DepthSourceManager _DepthManager;
     public FlowerFactoryScript _FlowerFactory;
@@ -41,8 +42,8 @@ public class BlobFactoryScript : MonoBehaviour {
     private ArrayList cubeList, sphereList, blobList, sceneryBlobList;
     private ushort[] blobGroupRoster;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
         cubeList = new ArrayList(); sphereList = new ArrayList();
         blobList = new ArrayList(); blobGroupRoster = new ushort[_GroupsToDetect];
@@ -324,7 +325,7 @@ public class BlobFactoryScript : MonoBehaviour {
         {
             Blob b = (Blob)blobList[i];
             GameObject cube = (GameObject)cubeList[i];
-            
+
             cube.SetActive(true);
             cube.transform.position = new Vector3(b.cx, -b.cy, -1);
             cube.transform.localScale = new Vector3(b.w, b.h, 1);
@@ -494,10 +495,10 @@ public class BlobFactoryScript : MonoBehaviour {
     {
         blob.x = blob.x + (int)((float)(midWidth - blob.x) * (1.0 - widthScale));
         blob.w = (int)((float)blob.w * widthScale);
-        
+
         blob.y = blob.y + (int)((float)(midHeight - blob.y) * (1.0 - heightScale));
         blob.h = (int)((float)blob.h * heightScale);
-        
+
         blob.x += xOffset;
         blob.y += yOffset;
 

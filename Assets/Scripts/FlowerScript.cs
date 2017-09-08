@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FlowerScript : MonoBehaviour {
+public class FlowerScript : MonoBehaviour
+{
 
     //public VideoClip[] movies;
     private MovieTexture[] movieTextures;
@@ -22,8 +23,8 @@ public class FlowerScript : MonoBehaviour {
     //public VideoClip movie;
     //public Texture movieTexture;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start()
     {
         //movies[0] = new MovieTexture();
         //gameObject.GetComponent<MeshRenderer>();
@@ -41,7 +42,7 @@ public class FlowerScript : MonoBehaviour {
         //movie = movieMaterial.mainTexture as MovieTexture;
 
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
-        videoClip = GetComponent<UnityEngine.Video.VideoClip>();
+        videoClip = GetComponent<UnityEngine.Video.VideoClip>(); // This may not work
 
         bloomed = false;
         unbloomed = true;
@@ -50,10 +51,10 @@ public class FlowerScript : MonoBehaviour {
         timeToUnbloom = false;
 
         videoPlayer.Pause();
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         if (timeToBloom && unbloomed)
         {
@@ -63,6 +64,7 @@ public class FlowerScript : MonoBehaviour {
             }
             if (!videoPlayer.isPlaying) videoPlayer.Play();
             unbloomed = false;
+            if (videoPlayer.isPlaying) Debug.Log("testing");
         }
 
         /*if (!bloomed)
@@ -82,7 +84,7 @@ public class FlowerScript : MonoBehaviour {
         {
             if ((int)videoPlayer.frame < 2) unbloomed = true;
         }*/
-	}
+    }
 
     public void bloom(int x, int y, bool bloom)
     {
