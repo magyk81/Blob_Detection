@@ -5,111 +5,119 @@ using UnityEngine.UI;
 
 public class FlowerScript : MonoBehaviour
 {
-
-    //public VideoClip[] movies;
-    private MovieTexture[] movieTextures;
-    private MovieTexture movie;
-    public Material movieMaterial;
-
     private UnityEngine.Video.VideoPlayer videoPlayer;
-    private UnityEngine.Video.VideoClip videoClip;
+    //private UnityEngine.Video.VideoClip videoClip;
     public UnityEngine.Video.VideoClip forwardClip;
     public UnityEngine.Video.VideoClip reverseClip;
+
+    private enum State { START, FORWARD, END, BACKWARD };
+    private State currentState;
 
     private bool bloomed;
     private bool unbloomed;
     private bool timeToUnbloom;
     private bool timeToBloom;
 
-    //public VideoClip movie;
-    //public Texture movieTexture;
-
     // Use this for initialization
     void Start()
     {
-        //movies[0] = new MovieTexture();
-        //gameObject.GetComponent<MeshRenderer>();
-        //gameObject.GetComponent<Material>().GetTexture = movie as MovieTexture;
-        //gameObject.GetComponent<Renderer>().GetComponent<Material>().mainTexture = movies[0] as MovieTexture;
-        //movieTexture = new MovieTexture();
-        //gameObject.GetComponent<MeshRenderer>();
-        //gameObject.GetComponent<Material>().GetTexture = movie as MovieTexture;
-        //gameObject.GetComponent<Renderer>().GetComponent<Material>().mainTexture = movieTexture as MovieTexture;
-
-        // for testing
-        //movie.Play();
-
-        //movie = gameObject.GetComponent<Renderer>().material.mainTexture as MovieTexture;
-        //movie = movieMaterial.mainTexture as MovieTexture;
-
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
-        videoClip = GetComponent<UnityEngine.Video.VideoClip>(); // This may not work
+        //videoClip = GetComponent<UnityEngine.Video.VideoClip>();
 
-        bloomed = false;
-        unbloomed = true;
+        currentState = State.START;
 
-        timeToBloom = false;
-        timeToUnbloom = false;
+        useWhichClip(false);
 
-        videoPlayer.Pause();
+        videoPlayer.Stop();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!unbloomed && !bloomed && !videoPlayer.isPlaying)
+        if (!videoPlayer.isPlaying)
         {
-            bloomed = true;
+            if (usingWhichClip()) currentState = State.END;
+            else currentState = State.START;
         }
-
-        if (timeToBloom && unbloomed)
-        {
-            // This checks if the current clip is the reverse video.
-            // If it is, it changes it to the non-reverse video.
-            if (!GetComponent<UnityEngine.Video.VideoClip>().Equals(forwardClip))
-            {
-                GetComponent<UnityEngine.Video.VideoPlayer>().clip = forwardClip;
-            }
-            if (!videoPlayer.isPlaying) videoPlayer.Play();
-            unbloomed = false;
-        }
-
-        if (bloomed && timeToUnbloom)
-        {
-            videoPlayer.Stop();
-            GetComponent<UnityEngine.Video.VideoPlayer>().clip = reverseClip;
-            videoPlayer.Play();
-            bloomed = false;
-        }
-
-        /*if (!unbloomed)
-        {
-            if ((int)videoPlayer.frame < 2) unbloomed = true;
-        }*/
     }
 
-    public void trigger(int x, int y, bool bloom)
+    public bool inBounds(int x, int y)
     {
         int localScaleX = (int)gameObject.transform.localScale.x / 1;
         int localScaleY = (int)gameObject.transform.localScale.y / 1;
         int positionX = (int)gameObject.transform.position.x;
         int positionY = (int)gameObject.transform.position.y * (-1);
 
-        if (x > positionX + localScaleX) return;
-        else if (x < positionX - localScaleX) return;
-        else if (y > positionY + localScaleY) return;
-        else if (y < positionY - localScaleY) return;
+        if (x > positionX + localScaleX) return false;
+        else if (x < positionX - localScaleX) return false;
+        else if (y > positionY + localScaleY) return false;
+        else if (y < positionY - localScaleY) return false;
 
-        if (bloom)
+        return true;
+    }
+
+    public void trigger(bool inBounds)
+    {
+        //if (!videoPlayer.isPlaying) videoPlayer.Play();
+        if (inBounds) tryGoingForward();
+        else tryGoingBackward();
+    }
+
+    private void tryGoingForward()
+    {
+        switch (currentState)
         {
-            timeToBloom = true;
-            timeToUnbloom = false;
+            case State.START:
+                if (!usingWhichClip()) useWhichClip(true);
+                videoPlayer.Play();
+                currentState = State.FORWARD;
+                break;
         }
+    }
 
+    private void tryGoingBackward()
+    {
+        switch (currentState)
+        {
+            case State.END:
+                if (usingWhichClip()) useWhichClip(false);
+                videoPlayer.Play();
+                currentState = State.BACKWARD;
+                break;
+        }
+    }
+
+    /**
+     * Returns true if using the forward clip.
+     * Returns false if using the backward clip.
+     */
+    private bool usingWhichClip()
+    {
+        if (GetComponent<UnityEngine.Video.VideoPlayer>().clip
+            == forwardClip) return true;
+        return false;
+    }
+
+    /**
+     * Switches to forward clip if parameter is true.
+     * Switches to backward clip if parameter is false.
+     * Will need to call videoPlayer.Play() to play the new clip.
+     */
+    private void useWhichClip(bool forward)
+    {
+        if (forward)
+        {
+            if (GetComponent<UnityEngine.Video.VideoClip>().
+                Equals(forwardClip)) return;
+            videoPlayer.Stop();
+            GetComponent<UnityEngine.Video.VideoPlayer>().clip = forwardClip;
+        }
         else
         {
-            timeToUnbloom = true;
-            timeToBloom = false;
+            if (GetComponent<UnityEngine.Video.VideoClip>().
+                Equals(reverseClip)) return;
+            videoPlayer.Stop();
+            GetComponent<UnityEngine.Video.VideoPlayer>().clip = reverseClip;
         }
     }
 }
