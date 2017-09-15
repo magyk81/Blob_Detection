@@ -340,8 +340,9 @@ public class BlobFactoryScript : MonoBehaviour
     {
         foreach (Blob blob in blobList)
         {
-            _FlowerFactory.bloomFlowers(blob.cx, blob.cy);
+            _FlowerFactory.checkFlowers(blob.cx, blob.cy);
         }
+        _FlowerFactory.triggerFlowers();
     }
 
     private void moveSpheres()

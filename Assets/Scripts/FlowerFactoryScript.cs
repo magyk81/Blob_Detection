@@ -64,31 +64,19 @@ public class FlowerFactoryScript : MonoBehaviour
         }
     }
 
-    public void bloomFlowers(int x, int y)
+    public void checkFlowers(int x, int y)
     {
-        ArrayList buffer = new ArrayList();
-
         foreach (GameObject flower in flowerList)
         {
-            if (flower.GetComponent<FlowerScript>().inBounds(x, y))
-            {
-                // trigger(true) sets the flowers to start blooming forward
-                flower.GetComponent<FlowerScript>().trigger(true);
-                buffer.Add(flower);
-                flowerChecklist.Remove(flower);
-            }
+            flower.GetComponent<FlowerScript>().inBounds(x, y);
         }
+    }
 
-        foreach (GameObject flower in flowerChecklist)
+    public void triggerFlowers()
+    {
+        foreach (GameObject flower in flowerList)
         {
-            // trigger(false) sets the flowers to start blooming backwards (unblooming)
-            flower.GetComponent<FlowerScript>().trigger(false);
-        }
-
-        foreach (GameObject flower in buffer)
-        {
-            // Return every flower to the checklist that was removed by the first loop
-            flowerChecklist.Add(flower);
+            flower.GetComponent<FlowerScript>().trigger();
         }
     }
 }

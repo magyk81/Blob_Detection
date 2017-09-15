@@ -12,6 +12,7 @@ public class FlowerScript : MonoBehaviour
 
     private enum State { START, FORWARD, END, BACKWARD };
     private State currentState;
+    private int blobsInBound;
 
     private bool bloomed;
     private bool unbloomed;
@@ -21,6 +22,8 @@ public class FlowerScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        blobsInBound = 0;
+
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
         //videoClip = GetComponent<UnityEngine.Video.VideoClip>();
 
@@ -41,25 +44,29 @@ public class FlowerScript : MonoBehaviour
         }
     }
 
-    public bool inBounds(int x, int y)
+    public void inBounds(int x, int y)
     {
         int localScaleX = (int)gameObject.transform.localScale.x / 1;
         int localScaleY = (int)gameObject.transform.localScale.y / 1;
         int positionX = (int)gameObject.transform.position.x;
         int positionY = (int)gameObject.transform.position.y * (-1);
 
-        if (x > positionX + localScaleX) return false;
-        else if (x < positionX - localScaleX) return false;
-        else if (y > positionY + localScaleY) return false;
-        else if (y < positionY - localScaleY) return false;
+        if (x > positionX + localScaleX) return;
+        else if (x < positionX - localScaleX) return;
+        else if (y > positionY + localScaleY) return;
+        else if (y < positionY - localScaleY) return;
 
-        return true;
+        blobsInBound++;
     }
 
-    public void trigger(bool inBounds)
+    public void trigger()
     {
         //if (!videoPlayer.isPlaying) videoPlayer.Play();
-        if (inBounds) tryGoingForward();
+        if (blobsInBound > 0)
+        {
+            tryGoingForward();
+            blobsInBound = 0;
+        }
         else tryGoingBackward();
     }
 
@@ -71,6 +78,9 @@ public class FlowerScript : MonoBehaviour
                 if (!usingWhichClip()) useWhichClip(true);
                 videoPlayer.Play();
                 currentState = State.FORWARD;
+                break;
+            case State.BACKWARD:
+                //GetComponent<UnityEngine.Video.VideoPlayer>().frame
                 break;
         }
     }
@@ -107,15 +117,13 @@ public class FlowerScript : MonoBehaviour
     {
         if (forward)
         {
-            if (GetComponent<UnityEngine.Video.VideoClip>().
-                Equals(forwardClip)) return;
+            if (GetComponent<UnityEngine.Video.VideoPlayer>().clip == forwardClip) return;
             videoPlayer.Stop();
             GetComponent<UnityEngine.Video.VideoPlayer>().clip = forwardClip;
         }
         else
         {
-            if (GetComponent<UnityEngine.Video.VideoClip>().
-                Equals(reverseClip)) return;
+            if (GetComponent<UnityEngine.Video.VideoPlayer>().clip == reverseClip) return;
             videoPlayer.Stop();
             GetComponent<UnityEngine.Video.VideoPlayer>().clip = reverseClip;
         }
