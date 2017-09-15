@@ -13,6 +13,7 @@ public class FlowerScript : MonoBehaviour
 
     private UnityEngine.Video.VideoPlayer videoPlayer;
     private UnityEngine.Video.VideoClip videoClip;
+    public UnityEngine.Video.VideoClip forwardClip;
     public UnityEngine.Video.VideoClip reverseClip;
 
     private bool bloomed;
@@ -56,20 +57,21 @@ public class FlowerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!unbloomed && !bloomed && !videoPlayer.isPlaying)
+        {
+            bloomed = true;
+        }
+
         if (timeToBloom && unbloomed)
         {
-            if (!GetComponent<UnityEngine.Video.VideoClip>().Equals(videoClip))
+            // This checks if the current clip is the reverse video.
+            // If it is, it changes it to the non-reverse video.
+            if (!GetComponent<UnityEngine.Video.VideoClip>().Equals(forwardClip))
             {
-                GetComponent<UnityEngine.Video.VideoPlayer>().clip = videoClip;
+                GetComponent<UnityEngine.Video.VideoPlayer>().clip = forwardClip;
             }
             if (!videoPlayer.isPlaying) videoPlayer.Play();
             unbloomed = false;
-            if (videoPlayer.isPlaying) Debug.Log("testing");
-        }
-
-        /*if (!bloomed)
-        {
-            if ((int)videoPlayer.frame == (int)videoPlayer.frameCount) bloomed = true;
         }
 
         if (bloomed && timeToUnbloom)
@@ -80,13 +82,13 @@ public class FlowerScript : MonoBehaviour
             bloomed = false;
         }
 
-        if (!unbloomed)
+        /*if (!unbloomed)
         {
             if ((int)videoPlayer.frame < 2) unbloomed = true;
         }*/
     }
 
-    public void bloom(int x, int y, bool bloom)
+    public void trigger(int x, int y, bool bloom)
     {
         int localScaleX = (int)gameObject.transform.localScale.x / 1;
         int localScaleY = (int)gameObject.transform.localScale.y / 1;

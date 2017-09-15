@@ -61,7 +61,7 @@ public class FlowerFactoryScript : MonoBehaviour
     {
         foreach (GameObject flower in flowerList)
         {
-            flower.GetComponent<FlowerScript>().bloom(x, y, true);
+            flower.GetComponent<FlowerScript>().trigger(x, y, true);
         }
     }
 }
