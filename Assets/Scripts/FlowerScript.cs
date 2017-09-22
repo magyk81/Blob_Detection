@@ -17,10 +17,15 @@ public class FlowerScript : MonoBehaviour
 
     private int frame;
     private int frameCount;
+    private int frameChange;
+    public int frameRate;
 
     // Use this for initialization
     void Start()
     {
+        forwardClip = Instantiate(forwardClip);
+        reverseClip = Instantiate(reverseClip);
+
         blobsInBound = 0;
         touch = 0;
 
@@ -34,24 +39,27 @@ public class FlowerScript : MonoBehaviour
 
         frame = 0;
         frameCount = (int) videoPlayer.clip.frameCount;
+        frameChange = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (videoPlayer.isPlaying)
-        {
+        //if (videoPlayer.isPlaying)
+        //{
             frame = (int) videoPlayer.frame;
-        }
+        //}
         
-        if (frame >= frameCount - 2 && !usingWhichClip())
+        if (frame >= frameCount - 1 && !usingWhichClip())
         {
             currentState = State.START;
         }
-        else if (frame >= frameCount - 2 && usingWhichClip())
+        else if (frame >= frameCount - 1 && usingWhichClip())
         {
             currentState = State.END;
         }
+
+        //changeFrame(true);
     }
 
     /**
@@ -60,8 +68,8 @@ public class FlowerScript : MonoBehaviour
      */ 
     public void inBounds(int x, int y)
     {
-        int localScaleX = (int)gameObject.transform.localScale.x / 1;
-        int localScaleY = (int)gameObject.transform.localScale.y / 1;
+        int localScaleX = (int)gameObject.transform.localScale.x;
+        int localScaleY = (int)gameObject.transform.localScale.y;
         int positionX = (int)gameObject.transform.position.x;
         int positionY = (int)gameObject.transform.position.y * (-1);
 
@@ -95,6 +103,7 @@ public class FlowerScript : MonoBehaviour
         switch (currentState)
         {
             case State.START:
+                //Debug.Log("Start");
                 //if (touch++ < touchThreshold) break;
                 //Debug.Log("start -> forward");
                 touch = 0;
@@ -104,6 +113,7 @@ public class FlowerScript : MonoBehaviour
                 currentState = State.FORWARD;
                 break;
             case State.BACKWARD:
+                //Debug.Log("Backward");
                 if (touch++ < touchThreshold) break;
                 //Debug.Log("backward -> forward");
                 touch = 0;
@@ -121,6 +131,7 @@ public class FlowerScript : MonoBehaviour
         switch (currentState)
         {
             case State.END:
+                //Debug.Log("End");
                 //if (touch++ < touchThreshold) break;
                 //Debug.Log("end -> backward");
                 touch = 0;
@@ -130,7 +141,9 @@ public class FlowerScript : MonoBehaviour
                 currentState = State.BACKWARD;
                 break;
             case State.FORWARD:
+                
                 if (touch++ < touchThreshold) break;
+                //Debug.Log("Forward");
                 //Debug.Log("forward -> backward");
                 touch = 0;
                 videoPlayer.Stop();
@@ -178,5 +191,37 @@ public class FlowerScript : MonoBehaviour
     {
         frame = (frameCount - 1) - frame;
         videoPlayer.frame = frame;
+    }
+
+    private void changeFrame(bool up)
+    {
+        if (up)
+        {
+            frameChange++;
+            if (frameChange > frameRate)
+            {
+                frame++;
+                videoPlayer.frame = frame;
+                frameChange = 0;
+            }
+            if (frame > frameCount - 1)
+            {
+                frame = frameCount - 1;
+            }
+        }
+        else
+        {
+            frameChange--;
+            if (frameChange < (-1) * frameRate)
+            {
+                frame--;
+                videoPlayer.frame = frame;
+                frameChange = 0;
+            }
+            if (frame < 0)
+            {
+                frame = 0;
+            }
+        }
     }
 }

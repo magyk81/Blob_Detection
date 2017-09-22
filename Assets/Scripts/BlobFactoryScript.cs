@@ -207,7 +207,7 @@ public class BlobFactoryScript : MonoBehaviour
 
         filterGroups();
 
-        //moveCubes();
+        moveCubes();
 
         //moveSpheres();
 

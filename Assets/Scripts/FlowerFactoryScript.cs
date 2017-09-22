@@ -48,8 +48,10 @@ public class FlowerFactoryScript : MonoBehaviour
         int vertIncrem = -height / displayedVertically;
 
         for (int i = 0; i < displayedHorizontally; i++)
+        //for (int i = 0; i < 1; i++)
         {
             for (int j = 0; j < displayedVertically; j++)
+            //for (int j = 0; j < 1; j++)
             {
                 GameObject flower = ((GameObject)flowerList[i * displayedVertically + j]);
                 flower.transform.position = new Vector3(horizIncrem * i + (horizIncrem / 2),
