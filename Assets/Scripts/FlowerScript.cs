@@ -6,44 +6,58 @@ using UnityEngine.UI;
 public class FlowerScript : MonoBehaviour
 {
     private UnityEngine.Video.VideoPlayer videoPlayer;
-    //private UnityEngine.Video.VideoClip videoClip;
     public UnityEngine.Video.VideoClip forwardClip;
     public UnityEngine.Video.VideoClip reverseClip;
 
     private enum State { START, FORWARD, END, BACKWARD };
     private State currentState;
     private int blobsInBound;
+    public int touchThreshold;
+    private int touch;
 
-    private bool bloomed;
-    private bool unbloomed;
-    private bool timeToUnbloom;
-    private bool timeToBloom;
+    private int frame;
+    private int frameCount;
 
     // Use this for initialization
     void Start()
     {
         blobsInBound = 0;
+        touch = 0;
 
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
-        //videoClip = GetComponent<UnityEngine.Video.VideoClip>();
 
-        currentState = State.START;
+        currentState = State.END;
 
-        useWhichClip(false);
+        useWhichClip(true);
 
         videoPlayer.Stop();
+
+        frame = 0;
+        frameCount = (int) videoPlayer.clip.frameCount;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!videoPlayer.isPlaying)
+        if (videoPlayer.isPlaying)
         {
-            if (usingWhichClip()) currentState = State.END;
-            else currentState = State.START;
+            frame = (int) videoPlayer.frame;
+        }
+        
+        if (frame >= frameCount - 2 && !usingWhichClip())
+        {
+            currentState = State.START;
+        }
+        else if (frame >= frameCount - 2 && usingWhichClip())
+        {
+            currentState = State.END;
         }
     }
 
+    /**
+     * Adds to the counter if the (x, y) coordinates are within the
+     * quad bounds of the flower. Otherwise, does not add to the counter.
+     */ 
     public void inBounds(int x, int y)
     {
         int localScaleX = (int)gameObject.transform.localScale.x / 1;
@@ -59,28 +73,45 @@ public class FlowerScript : MonoBehaviour
         blobsInBound++;
     }
 
+    /**
+     * If there were any blobs in bound, it will try blooming.
+     * If there were no blobs in bound, it will try unblooming.
+     */
     public void trigger()
     {
-        //if (!videoPlayer.isPlaying) videoPlayer.Play();
-        if (blobsInBound > 0)
-        {
-            tryGoingForward();
-            blobsInBound = 0;
-        }
+        if (blobsInBound > 0) tryGoingForward();
         else tryGoingBackward();
+        blobsInBound = 0;
     }
 
+    /**
+     * If it's ready to start, start blooming.
+     * If it's already going forward, do nothing.
+     * If it's going backward, make it go forward by replacing the clip with
+     * the forward one and set at the mirrored time frame so that it appears seemless.
+     */
     private void tryGoingForward()
     {
         switch (currentState)
         {
             case State.START:
+                //if (touch++ < touchThreshold) break;
+                //Debug.Log("start -> forward");
+                touch = 0;
+                videoPlayer.Stop();
                 if (!usingWhichClip()) useWhichClip(true);
                 videoPlayer.Play();
                 currentState = State.FORWARD;
                 break;
             case State.BACKWARD:
-                //GetComponent<UnityEngine.Video.VideoPlayer>().frame
+                if (touch++ < touchThreshold) break;
+                //Debug.Log("backward -> forward");
+                touch = 0;
+                videoPlayer.Stop();
+                if (!usingWhichClip()) useWhichClip(true);
+                mirrorFrame();
+                videoPlayer.Play();
+                currentState = State.FORWARD;
                 break;
         }
     }
@@ -90,7 +121,21 @@ public class FlowerScript : MonoBehaviour
         switch (currentState)
         {
             case State.END:
+                //if (touch++ < touchThreshold) break;
+                //Debug.Log("end -> backward");
+                touch = 0;
+                videoPlayer.Stop();
                 if (usingWhichClip()) useWhichClip(false);
+                videoPlayer.Play();
+                currentState = State.BACKWARD;
+                break;
+            case State.FORWARD:
+                if (touch++ < touchThreshold) break;
+                //Debug.Log("forward -> backward");
+                touch = 0;
+                videoPlayer.Stop();
+                if (usingWhichClip()) useWhichClip(false);
+                mirrorFrame();
                 videoPlayer.Play();
                 currentState = State.BACKWARD;
                 break;
@@ -103,7 +148,7 @@ public class FlowerScript : MonoBehaviour
      */
     private bool usingWhichClip()
     {
-        if (GetComponent<UnityEngine.Video.VideoPlayer>().clip
+        if (videoPlayer.clip
             == forwardClip) return true;
         return false;
     }
@@ -117,15 +162,21 @@ public class FlowerScript : MonoBehaviour
     {
         if (forward)
         {
-            if (GetComponent<UnityEngine.Video.VideoPlayer>().clip == forwardClip) return;
+            if (videoPlayer.clip == forwardClip) return;
             videoPlayer.Stop();
-            GetComponent<UnityEngine.Video.VideoPlayer>().clip = forwardClip;
+            videoPlayer.clip = forwardClip;
         }
         else
         {
-            if (GetComponent<UnityEngine.Video.VideoPlayer>().clip == reverseClip) return;
+            if (videoPlayer.clip == reverseClip) return;
             videoPlayer.Stop();
-            GetComponent<UnityEngine.Video.VideoPlayer>().clip = reverseClip;
+            videoPlayer.clip = reverseClip;
         }
+    }
+
+    private void mirrorFrame()
+    {
+        frame = (frameCount - 1) - frame;
+        videoPlayer.frame = frame;
     }
 }

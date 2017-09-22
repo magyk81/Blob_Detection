@@ -54,7 +54,7 @@ public class FlowerFactoryScript : MonoBehaviour
                 GameObject flower = ((GameObject)flowerList[i * displayedVertically + j]);
                 flower.transform.position = new Vector3(horizIncrem * i + (horizIncrem / 2),
                     vertIncrem * j + (vertIncrem / 2), 0);
-                flower.transform.localScale = new Vector3(20, 20, 1);
+                flower.transform.localScale = new Vector3(40, 40, 1);
             }
         }
 

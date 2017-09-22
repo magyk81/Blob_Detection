@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ForegroundScript : MonoBehaviour
 {
-
     public DepthSourceManager _DepthManager;
 
     // Use this for initialization

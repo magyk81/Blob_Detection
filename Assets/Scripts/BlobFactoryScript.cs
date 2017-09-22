@@ -207,7 +207,7 @@ public class BlobFactoryScript : MonoBehaviour
 
         filterGroups();
 
-        moveCubes();
+        //moveCubes();
 
         //moveSpheres();
 
@@ -419,7 +419,7 @@ public class BlobFactoryScript : MonoBehaviour
         public int x, y, w, h, cx, cy;
         int maxSize = 20;
         int _Threshold2 = 20;
-        int _MinSize = 20;
+        //int _MinSize = 20;
         public int groupTag = 0;
         public int size = 0;
 
