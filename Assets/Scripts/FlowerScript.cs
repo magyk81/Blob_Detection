@@ -9,6 +9,8 @@ public class FlowerScript : MonoBehaviour
     public UnityEngine.Video.VideoClip forwardClip;
     public UnityEngine.Video.VideoClip reverseClip;
 
+    public FlowerTwinScript twinScript;
+
     private enum State { START, FORWARD, END, BACKWARD };
     private State currentState;
     private int blobsInBound;
@@ -17,8 +19,9 @@ public class FlowerScript : MonoBehaviour
 
     private int frame;
     private int frameCount;
-    private int frameChange;
     public int frameRate;
+
+    private Vector3 position;
 
     // Use this for initialization
     void Start()
@@ -39,7 +42,8 @@ public class FlowerScript : MonoBehaviour
 
         frame = 0;
         frameCount = (int) videoPlayer.clip.frameCount;
-        frameChange = 0;
+
+        position = new Vector3();
     }
 
     // Update is called once per frame
@@ -58,8 +62,6 @@ public class FlowerScript : MonoBehaviour
         {
             currentState = State.END;
         }
-
-        //changeFrame(true);
     }
 
     /**
@@ -92,6 +94,12 @@ public class FlowerScript : MonoBehaviour
         blobsInBound = 0;
     }
 
+    public void setPosition(int x, int y, int z)
+    {
+        position.Set(x, y, z);
+        twinScript.setPosition(x, y, z);
+    }
+
     /**
      * If it's ready to start, start blooming.
      * If it's already going forward, do nothing.
@@ -108,7 +116,9 @@ public class FlowerScript : MonoBehaviour
                 //Debug.Log("start -> forward");
                 touch = 0;
                 videoPlayer.Stop();
-                if (!usingWhichClip()) useWhichClip(true);
+
+                useWhichClip(true);
+
                 videoPlayer.Play();
                 currentState = State.FORWARD;
                 break;
@@ -118,7 +128,9 @@ public class FlowerScript : MonoBehaviour
                 //Debug.Log("backward -> forward");
                 touch = 0;
                 videoPlayer.Stop();
-                if (!usingWhichClip()) useWhichClip(true);
+
+                useWhichClip(true);
+
                 mirrorFrame();
                 videoPlayer.Play();
                 currentState = State.FORWARD;
@@ -136,7 +148,9 @@ public class FlowerScript : MonoBehaviour
                 //Debug.Log("end -> backward");
                 touch = 0;
                 videoPlayer.Stop();
-                if (usingWhichClip()) useWhichClip(false);
+
+                useWhichClip(false);
+
                 videoPlayer.Play();
                 currentState = State.BACKWARD;
                 break;
@@ -147,7 +161,9 @@ public class FlowerScript : MonoBehaviour
                 //Debug.Log("forward -> backward");
                 touch = 0;
                 videoPlayer.Stop();
-                if (usingWhichClip()) useWhichClip(false);
+
+                useWhichClip(false);
+
                 mirrorFrame();
                 videoPlayer.Play();
                 currentState = State.BACKWARD;
@@ -161,8 +177,11 @@ public class FlowerScript : MonoBehaviour
      */
     private bool usingWhichClip()
     {
-        if (videoPlayer.clip
+        /*if (videoPlayer.clip
             == forwardClip) return true;
+        return false;*/
+
+        if (twinScript.isFront()) return true;
         return false;
     }
 
@@ -175,15 +194,18 @@ public class FlowerScript : MonoBehaviour
     {
         if (forward)
         {
-            if (videoPlayer.clip == forwardClip) return;
+            //if (videoPlayer.clip == forwardClip) return;
+            if (twinScript.isFront()) return;
             videoPlayer.Stop();
-            videoPlayer.clip = forwardClip;
+            //videoPlayer.clip = forwardClip;
         }
         else
         {
-            if (videoPlayer.clip == reverseClip) return;
+            //if (videoPlayer.clip == reverseClip) return;
             videoPlayer.Stop();
-            videoPlayer.clip = reverseClip;
+            twinScript.bringToFront((frameCount - 1) - frame);
+            bringToBack();
+            //videoPlayer.clip = reverseClip;
         }
     }
 
@@ -193,35 +215,8 @@ public class FlowerScript : MonoBehaviour
         videoPlayer.frame = frame;
     }
 
-    private void changeFrame(bool up)
+    private void bringToBack()
     {
-        if (up)
-        {
-            frameChange++;
-            if (frameChange > frameRate)
-            {
-                frame++;
-                videoPlayer.frame = frame;
-                frameChange = 0;
-            }
-            if (frame > frameCount - 1)
-            {
-                frame = frameCount - 1;
-            }
-        }
-        else
-        {
-            frameChange--;
-            if (frameChange < (-1) * frameRate)
-            {
-                frame--;
-                videoPlayer.frame = frame;
-                frameChange = 0;
-            }
-            if (frame < 0)
-            {
-                frame = 0;
-            }
-        }
+
     }
 }
