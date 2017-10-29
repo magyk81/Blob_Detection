@@ -47,6 +47,8 @@ public class FlowerFactoryScript : MonoBehaviour
         int horizIncrem = width / displayedHorizontally;
         int vertIncrem = -height / displayedVertically;
 
+        Debug.Log("horizIncrem: " + horizIncrem);
+
         for (int i = 0; i < displayedHorizontally; i++)
         //for (int i = 0; i < 1; i++)
         {
@@ -54,7 +56,9 @@ public class FlowerFactoryScript : MonoBehaviour
             //for (int j = 0; j < 1; j++)
             {
                 GameObject flower = ((GameObject)flowerList[i * displayedVertically + j]);
-                flower.GetComponent<FlowerScript>().setPosition(horizIncrem * i + (horizIncrem / 2),
+                /*flower.GetComponent<FlowerScript>().setPosition(horizIncrem * i + (horizIncrem / 2),
+                    vertIncrem * j + (vertIncrem / 2), 0);*/
+                flower.transform.position = new Vector3(horizIncrem * i + (horizIncrem / 2),
                     vertIncrem * j + (vertIncrem / 2), 0);
                 flower.transform.localScale = new Vector3(40, 40, 1);
             }
@@ -70,7 +74,7 @@ public class FlowerFactoryScript : MonoBehaviour
     {
         foreach (GameObject flower in flowerList)
         {
-            flower.GetComponent<FlowerScript>().inBounds(x, y);
+            flower.GetComponent<FlowerScript>().inBounds(x, y, 0);
         }
     }
 
