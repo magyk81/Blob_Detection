@@ -33,6 +33,7 @@ public class FlowerScript : MonoBehaviour
         touch = 0;
 
         videoPlayer = GetComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer.clip = forwardClip;
 
         currentState = State.END;
 

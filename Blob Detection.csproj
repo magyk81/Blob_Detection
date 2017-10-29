@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\DepthSourceManager.cs" />
     <Compile Include="Assets\Scripts\FlowerFactoryScript.cs" />
     <Compile Include="Assets\Scripts\FlowerScript.cs" />
+    <Compile Include="Assets\Scripts\FlowerTwinScript.cs" />
     <Compile Include="Assets\Scripts\ForegroundScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
