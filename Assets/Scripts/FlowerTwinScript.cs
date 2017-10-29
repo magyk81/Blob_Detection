@@ -24,8 +24,8 @@ public class FlowerTwinScript : MonoBehaviour
         videoPlayer.Stop();
         front = false;
 
-        frameCount = 0;
-        frameCount = (int)videoPlayer.clip.frameCount;
+        //frameCount = 0;
+        //frameCount = (int)videoPlayer.clip.frameCount;
 
         frontPosition = new Vector3();
         backPosition = new Vector3();
