@@ -8,6 +8,8 @@ public class FlowerScript : MonoBehaviour {
     public GameObject forwardFlower;
     public GameObject reverseFlower;
 
+    public int blobMassThresh;
+
     private VideoPlayer forwardPlayer;
     private VideoPlayer reversePlayer;
 
@@ -18,6 +20,7 @@ public class FlowerScript : MonoBehaviour {
     private State currentState;
 
     private int blobMass;
+    private int blobMassMax;
 
     // Use this for initialization
     void Start ()
@@ -31,6 +34,7 @@ public class FlowerScript : MonoBehaviour {
         currentState = State.START;
 
         blobMass = 0;
+        blobMassMax = blobMassThresh * 2;
     }
 	
 	// Update is called once per frame
@@ -55,14 +59,16 @@ public class FlowerScript : MonoBehaviour {
         else if (y < positionY - localScaleY) return;
 
         //blobMass += mass;
-        blobMass = 1;
+        blobMass += 2;
+        if (blobMass > blobMassMax) blobMass = blobMassMax;
     }
 
     public void trigger()
     {
-        if (blobMass > 0) tryGoingForward();
-        else tryGoingBackward();
-        blobMass = 0;
+        if (blobMass > blobMassThresh) tryGoingForward();
+        else if (blobMass == 0) tryGoingBackward();
+        blobMass--;
+        if (blobMass < 0) blobMass = 0;
     }
 
     private void tryGoingForward()
