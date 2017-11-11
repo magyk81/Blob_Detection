@@ -66,7 +66,7 @@ public class FlowerScript : MonoBehaviour {
     {
         if (blobMass > blobMassThresh) tryGoingForward();
         else if (blobMass == 0) tryGoingBackward();
-        blobMass--;
+        blobMass = 0;
         if (blobMass < 0) blobMass = 0;
     }
 
